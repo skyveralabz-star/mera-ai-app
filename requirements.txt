@@ -1,0 +1,33 @@
+import streamlit as st
+import google.generativeai as genai
+
+# 1. Website ka Vibe / Design set karein
+st.set_page_config(page_title="Mera AI Product", page_icon="🚀")
+st.title("🚀 Mera Shandaar AI Assistant")
+st.write("Ye app maine Google AI Studio aur Vibe Coding se banayi hai!")
+
+# 2. API Key Setup (Secure tarike se)
+# Note: Hum API key ko code mein nahi likhenge, balki Streamlit ki settings mein daalenge
+try:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+except:
+    st.error("⚠️ Server par API key set nahi hai!")
+
+# 3. Model select karein (Aap apna trained model name bhi daal sakte hain)
+model = genai.GenerativeModel('gemini-2.5-flash')
+
+# 4. User Interface (Input box aur Button)
+user_prompt = st.text_area("Aapka sawal ya prompt yahan likhein:", placeholder="Yahan type karein...")
+
+if st.button("Jawab Banao ✨"):
+    if user_prompt:
+        with st.spinner("AI soch raha hai... 🤔"):
+            try:
+                # AI se answer maangna
+                response = model.generate_content(user_prompt)
+                st.success("Ye raha aapka jawab:")
+                st.info(response.text)
+            except Exception as e:
+                st.error(f"Kuch gadbad ho gayi: {e}")
+    else:
+        st.warning("Pehle box mein kuch likhiye!")
